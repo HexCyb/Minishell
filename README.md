@@ -1,3 +1,7 @@
+> Developed together with **Burak Yılmaz** ([@Ropnez](https://github.com/Ropnez)) at 42 Türkiye · original repository: [Ropnez/Minishell](https://github.com/Ropnez/Minishell)
+>
+> Bu proje 42 Türkiye'de Burak Yılmaz ile birlikte geliştirildi.
+
 # Minishell Projesi
 
 ## İçindekiler

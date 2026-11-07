@@ -55,7 +55,7 @@ COMPARE = [
     ("export without value", "export LATER\nenv | grep -c LATER\nexport | grep LATER", "full"),
     ("export invalid", "export 1A=b OK=1 =x A-B=2\necho $? $OK", "full"),
     ("unset", "export U=1\nunset U NOPE 1A\necho [$U] $?", "full"),
-    ("export sorted listing", "export | grep -v GLIBC | head -n 3", "full"),
+    ("export sorted listing", "export | grep -v -e GLIBC -e 'x LD_' | head -n 4", "full"),  # Valgrind adds those
     ("SHLVL goes up", "echo $SHLVL", "full"),
     # exit
     ("exit 42", "exit 42\necho never", "full"),

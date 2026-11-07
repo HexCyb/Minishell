@@ -1,0 +1,20 @@
+# readline keeps its line buffer, keymaps and history until the process ends:
+# the subject allows these "leaks" (they are not the shell's own memory).
+{
+   readline
+   Memcheck:Leak
+   ...
+   fun:readline
+}
+{
+   add_history
+   Memcheck:Leak
+   ...
+   fun:add_history
+}
+{
+   rl_initialize
+   Memcheck:Leak
+   ...
+   fun:rl_initialize
+}

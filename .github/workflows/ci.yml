@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# The tests compare minishell with bash: the runner is pinned so bash's version stays the same.
+jobs:
+  test:
+    name: build + tests (${{ matrix.cc }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v5
+      - name: GNU readline
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libreadline-dev
+      - name: Build (-Wall -Wextra -Werror)
+        run: make CC=${{ matrix.cc }}
+      - name: 105 scripts compared with bash, fixed answers, prompt and signals in a terminal
+        run: make test
+
+  memory:
+    name: AddressSanitizer + UBSan, Valgrind
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: GNU readline and Valgrind
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libreadline-dev valgrind
+      - name: Tests with AddressSanitizer (leaks included) and UndefinedBehaviorSanitizer
+        run: |
+          sudo sysctl vm.mmap_rnd_bits=28
+          make CFLAGS="-Wall -Wextra -Werror -Iinclude -g -fsanitize=address,undefined" \
+               LDLIBS="-lreadline -fsanitize=address,undefined"
+          UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 make test
+      - name: Every script under Valgrind, every forked process checked
+        run: |
+          make fclean && make
+          make valgrind
